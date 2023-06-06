@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'home.dart';
+
 class AuthForm extends StatefulWidget {
   const AuthForm({Key? key}) : super(key: key);
 
@@ -16,8 +18,10 @@ class _AuthFormState extends State<AuthForm> {
   var _password = ''; //variable for password
   var _username = ''; //variable for username
   bool _islogin = true; //variable for login
+  bool _successlog = false;
+  bool _successsign = false;
 
-  startauthenticaltion() async{ //function for authentication asynchrnously is used to make the function run in background that wont effect the workng of the app
+  startauthentication() async{ //function for authentication asynchrnously is used to make the function run in background that wont effect the workng of the app
     final isValid = _formKey.currentState!.validate(); //validate the form as checks for currentstate of the form
     FocusScope.of(context).unfocus(); //unfocus the form
 
@@ -33,7 +37,9 @@ class _AuthFormState extends State<AuthForm> {
 
     try{
       if(_islogin){ //if user is login
+        print('login');
         authResult = await auth.signInWithEmailAndPassword(email: email, password: password); //sign in with email and password
+        _successlog = true;
       }
       else{
         authResult = await auth.createUserWithEmailAndPassword(email: email, password: password); // sign up with email and password
@@ -41,7 +47,9 @@ class _AuthFormState extends State<AuthForm> {
         await FirebaseFirestore.instance.collection('users').doc(uid).set({ // set the data in Firebase
           'username' : username, // username
           'email' : email, // email
+          'password' : password, // password
         });
+        _successsign = true;
       }
     }
     catch(error){
@@ -105,7 +113,7 @@ class _AuthFormState extends State<AuthForm> {
                   obscureText: true,
                   validator: (value){
                     if(value!.isEmpty || value.length < 7){
-                      return 'Please enter a valid username';
+                      return 'Please enter a password with 7 or more characters';
                     }
                     return null;
                   },
@@ -132,16 +140,35 @@ class _AuthFormState extends State<AuthForm> {
                     color: Colors.lightBlue,
                   ),
                   child: ElevatedButton(
-                    onPressed: (){
-                      print('pressed');
-                      startauthenticaltion();
-                    },
-                    child: Text(
-                    _islogin ? 'Login' : 'Sign Up', //if user is login then login else sign up
-                      style: GoogleFonts.roboto(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                      ),
+                  onPressed: () {
+                    startauthentication();
+                    if (_successlog == true) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
+                    }
+                    else if(_successsign == true){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
+                    }
+                    else if(_successsign == false)
+                    {
+                      //ToDo: show alret dialog of wrong password
+                    }
+                    else if(_successsign == false)
+                    {
+                      //Todo: show alert dialog of not signed in
+                    }
+                  },
+                  child: _islogin == true ? Text(
+                    'Login',
+                    style: GoogleFonts.roboto(
+                      color: Colors.white,
+                      fontSize: 18.0,
+                    ),
+                  ) : Text(
+                    'SignUp',
+                    style: GoogleFonts.roboto(
+                      color: Colors.white,
+                      fontSize: 18.0,
+                    ),
                   ),
                 ),
                 ),
