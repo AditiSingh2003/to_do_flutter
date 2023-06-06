@@ -111,6 +111,12 @@ class _AuthFormState extends State<AuthForm> {
                   SizedBox(height: 10,),
                   if(!_islogin) //if user is not login
                   TextFormField(
+                    validator: (value){ //validator for email
+                      if(value!.isEmpty ){ //if email is empty or not contains @
+                        return 'Please enter a Username'; //return the message
+                      } //else
+                      return null; //return null
+                    },
                     onSaved: (value){
                       _username = value!;
                     },
