@@ -36,6 +36,7 @@ dependencies:
   firebase_core:
   intl: 
   fluttertoast:
+  quickalert:
 
 
 

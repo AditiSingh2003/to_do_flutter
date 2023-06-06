@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:quickalert/quickalert.dart';
 import 'home.dart';
 
 class AuthForm extends StatefulWidget {
@@ -13,6 +13,23 @@ class AuthForm extends StatefulWidget {
 }
 
 class _AuthFormState extends State<AuthForm> {
+
+  void showAlertlog(){
+    QuickAlert.show(
+        context: context,
+        text: "The password doesn't match or the user doesn't exist",
+        type: QuickAlertType.error,
+    );
+  }
+
+  void showAlertsign(){
+    QuickAlert.show(
+      context: context,
+      text: 'The provided info does not match the criteria',
+      type: QuickAlertType.error,
+    );
+  }
+
   final _formKey = GlobalKey<FormState>(); //constant key for form
   var _email = ''; //variable for email
   var _password = ''; //variable for password
@@ -150,11 +167,11 @@ class _AuthFormState extends State<AuthForm> {
                     }
                     else if(_successsign == false)
                     {
-                      //ToDo: show alret dialog of wrong password
+                      showAlertlog();
                     }
                     else if(_successsign == false)
                     {
-                      //Todo: show alert dialog of not signed in
+                      showAlertsign();
                     }
                   },
                   child: _islogin == true ? Text(
