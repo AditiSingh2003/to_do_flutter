@@ -12,6 +12,13 @@ class AddTodo extends StatefulWidget {
 }
 
 class _AddTodoState extends State<AddTodo> {
+
+  
+  Color hexToColor(String hexColor) {
+  final hexCode = hexColor.replaceAll('#', '');
+  return Color(int.parse('FF$hexCode', radix: 16));
+  }
+
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
@@ -33,7 +40,7 @@ addtasktodatabase() async{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey[700],
+        backgroundColor: hexToColor('#2A364E'),
         title: const Text('Add Todo'),
         centerTitle: true,
       ),
@@ -47,7 +54,7 @@ addtasktodatabase() async{
               decoration: InputDecoration(
                 labelText: 'Title',
                 labelStyle: TextStyle(
-                  color: Colors.grey[700],
+                  color: hexToColor('#2A364E'),
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -60,7 +67,7 @@ addtasktodatabase() async{
               decoration: InputDecoration(
                 labelText: 'Description',
                 labelStyle: TextStyle(
-                  color: Colors.grey[700],
+                  color: hexToColor('#2A364E'),
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -73,16 +80,15 @@ addtasktodatabase() async{
                 addtasktodatabase();
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
               },
-              child: Text('Add Todo'),
+              child: Text('Add Entry'),
               style: ElevatedButton.styleFrom(
-                primary: Colors.grey[700],
+                primary: hexToColor('#2A364E'),
                 padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 10.0),
                 textStyle: TextStyle(
                   fontSize: 20.0,
                 ),
               ),
             ),
-
           ],
         ),
       ),

@@ -13,6 +13,10 @@ class AuthForm extends StatefulWidget {
 }
 
 class _AuthFormState extends State<AuthForm> {
+  Color hexToColor(String hexColor) {
+  final hexCode = hexColor.replaceAll('#', '');
+  return Color(int.parse('FF$hexCode', radix: 16));
+  }
 
   void showAlertlog(){
     QuickAlert.show(
@@ -56,17 +60,21 @@ class _AuthFormState extends State<AuthForm> {
       if(_islogin){ //if user is login
         print('login');
         authResult = await auth.signInWithEmailAndPassword(email: email, password: password); //sign in with email and password
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
         _successlog = true;
       }
       else{
         authResult = await auth.createUserWithEmailAndPassword(email: email, password: password); // sign up with email and password
         String uid = authResult.user!.uid; // variable for user id
-        await FirebaseFirestore.instance.collection('users').doc(uid).set({ // set the data in Firebase
-          'username' : username, // username
-          'email' : email, // email
-          'password' : password, // password
-        });
+        await FirebaseFirestore.instance.collection('users').doc(uid).set(
+            { // set the data in Firebase
+              'username': username, // username
+              'email': email, // email
+              'password': password, // password
+            }
+        );
         _successsign = true;
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
       }
     }
     catch(error){
@@ -76,11 +84,20 @@ class _AuthFormState extends State<AuthForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
+  return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: const AssetImage('assets/try.png'),
+          fit: BoxFit.cover,
+        )
+      ),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height *0.02,right: 35,left: 35),
       child: ListView(
         children: <Widget>[
+          Container(
+            child: Text('Welcome!',style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
+          ),
+          SizedBox(height: 10,),
           Padding(padding: EdgeInsets.all(10.0),
             child: Form(
               key: _formKey,
@@ -160,18 +177,16 @@ class _AuthFormState extends State<AuthForm> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: Colors.lightBlue,
+                    color: Colors.lightBlue, 
                   ),
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                    primary: hexToColor('#2A364E'),
+                    onPrimary: Colors.white,
+                  ),
                   onPressed: () {
                     startauthentication();
-                    if (_successlog == true) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
-                    }
-                    else if(_successsign == true){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
-                    }
-                    else if(_successsign == false)
+                    if(_successsign == false)
                     {
                       showAlertlog();
                     }
@@ -206,7 +221,7 @@ class _AuthFormState extends State<AuthForm> {
                     child: Text(
                       _islogin ? 'Create new account' : ' I already has an account',
                       style: GoogleFonts.roboto(
-                        color: Colors.blue,
+                        color: Colors.black,
                         fontSize: 18.0,
                       ),
                     ),
@@ -221,4 +236,3 @@ class _AuthFormState extends State<AuthForm> {
     );
   }
 }
-

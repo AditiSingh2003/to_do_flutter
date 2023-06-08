@@ -13,6 +13,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  Color hexToColor(String hexColor) {
+  final hexCode = hexColor.replaceAll('#', '');
+  return Color(int.parse('FF$hexCode', radix: 16));
+  }
   String uid = '';
 
   @override
@@ -30,7 +34,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar : AppBar(
-        backgroundColor: Colors.grey[700],
+        backgroundColor:hexToColor('#2A364E'),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -69,7 +73,7 @@ class _HomeState extends State<Home> {
                       onPressed: (){
                         FirebaseFirestore.instance.collection('tasks').doc(uid).collection('userTasks').doc(snapshot.data!.docs[index]['time']).delete();
                       },
-                      icon: Icon(Icons.delete),
+                      icon: Icon(Icons.delete, color: hexToColor('#2A364E'),),
                     ),
                   ),
                 );
@@ -84,7 +88,7 @@ class _HomeState extends State<Home> {
            Navigator.push(context, MaterialPageRoute(builder: (context) => const AddTodo()));
         },
         child: Icon(Icons.add),
-        backgroundColor: Colors.grey[700],
+        backgroundColor: hexToColor('#2A364E'),
       ),
     );
   }
