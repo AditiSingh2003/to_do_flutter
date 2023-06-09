@@ -21,16 +21,24 @@ class _AuthFormState extends State<AuthForm> {
   void showAlertlog(){
     QuickAlert.show(
         context: context,
-        text: "The password doesn't match or the user doesn't exist",
+        text: "The credentials doesn't match",
         type: QuickAlertType.error,
     );
   }
 
-  void showAlertsign(){
+  void showAlertlogdone(){
     QuickAlert.show(
       context: context,
-      text: 'The provided info does not match the criteria',
-      type: QuickAlertType.error,
+      text: 'Successfully Loged In',
+      type: QuickAlertType.success,
+    );
+  }
+
+  void showAlertsigndone(){
+    QuickAlert.show(
+      context: context,
+      text: 'Registered Successfully',
+      type: QuickAlertType.success,
     );
   }
 
@@ -39,8 +47,7 @@ class _AuthFormState extends State<AuthForm> {
   var _password = ''; //variable for password
   var _username = ''; //variable for username
   bool _islogin = true; //variable for login
-  bool _successlog = false;
-  bool _successsign = false;
+
 
   startauthentication() async{ //function for authentication asynchrnously is used to make the function run in background that wont effect the workng of the app
     final isValid = _formKey.currentState!.validate(); //validate the form as checks for currentstate of the form
@@ -61,7 +68,7 @@ class _AuthFormState extends State<AuthForm> {
         print('login');
         authResult = await auth.signInWithEmailAndPassword(email: email, password: password); //sign in with email and password
         Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
-        _successlog = true;
+        showAlertlogdone();
       }
       else{
         authResult = await auth.createUserWithEmailAndPassword(email: email, password: password); // sign up with email and password
@@ -73,11 +80,12 @@ class _AuthFormState extends State<AuthForm> {
               'password': password, // password
             }
         );
-        _successsign = true;
         Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
+        showAlertsigndone();
       }
     }
     catch(error){
+      showAlertlog();
       print(error);
     }
   }
@@ -186,14 +194,6 @@ class _AuthFormState extends State<AuthForm> {
                   ),
                   onPressed: () {
                     startauthentication();
-                    if(_successsign == false)
-                    {
-                      showAlertlog();
-                    }
-                    else if(_successsign == false)
-                    {
-                      showAlertsign();
-                    }
                   },
                   child: _islogin == true ? Text(
                     'Login',
